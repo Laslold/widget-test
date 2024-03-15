@@ -1,20 +1,19 @@
-<template>
-  <div>
-    <h1>My project</h1>
-  </div>
+<template lang="">
+  <header>Header</header>
+  <nav>Navigation</nav>
+  <main>
+    <div class="container"><Banner /></div>
+    <div class="container"><Steps /></div>
+    <div class="container"><Form /></div>
+  </main>
+  <footer>Footer</footer>
 </template>
-
-<style scoped>
-/* .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-} */
-</style>
+<script>
+import Banner from "./components/Banner.vue";
+import Steps from "./components/Steps.vue";
+import Form from "./components/Form.vue";
+export default {
+  components: { Banner, Steps, Form },
+};
+</script>
+<style scoped></style>

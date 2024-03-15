@@ -1,5 +1,9 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
-
-createApp(App).mount('#app')
+import { createApp } from "vue";
+import "./style.css";
+import components from "./components/Ui";
+import App from "./App.vue";
+const app = createApp(App);
+components.forEach((component) => {
+  app.component(component.name, component);
+});
+app.mount("#app");
