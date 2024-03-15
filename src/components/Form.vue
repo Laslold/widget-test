@@ -10,13 +10,13 @@
         </div>
       </div>
 
-      <form class="form" @submit.prevent>
+      <form class="form" @submit.prevent="onSubmitForm">
         <div class="inputNumber">
           <numberInput
             type="text"
-            v-bind:value="inputNumber"
-            @input="inputNumber = $event.target.value"
+            v-model.trim="dataForm.inputNumber"
             placeholder="AA1234AA"
+            pattern="^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$"
             required
           />
         </div>
@@ -24,37 +24,62 @@
           <h4>Вік страхувальника <span> (повних років)</span></h4>
           <myInput
             placeholder="21"
-            type="text"
-            v-bind:value="inputAge"
-            @input="inputAge = $event.target.value"
+            type="number"
+            v-model.trim.number="dataForm.inputAge"
+            pattern="?:1[8-9]|[2-6]\d|7[0-5]"
             required
           />
         </div>
         <div class="address">
           <h4>Місце реєстрації власника ТЗ</h4>
+
+          <!-- <el-input v-model="dataForm.inputAddress" style="width: 240px">
+            <template #prefix>
+              <el-icon class="el-input__icon"><Search /></el-icon>
+            </template>
+          </el-input> -->
+          <!-- <el-input
+            v-model="dataForm.inputAddress"
+            style="width: 240px"
+            placeholder="Type something"
+            :prefix-icon="icons.Search"
+          /> -->
+
           <myInput
             placeholder="Київ, Київська обл., 01001"
             type="text"
-            v-bind:value="inputAddress"
-            @input="inputAddress = $event.target.value"
+            v-model.trim="dataForm.inputAddress.addressString"
             required
           />
 
-          <div class="tags"><tags v-bind:tags="tags" @:click="onTag" /></div>
+          <div class="tags">
+            <tags v-bind:tags="tags" @addInput="addInput" />
+          </div>
         </div>
-        <myButton class="btn" type="submit" @:click="onSubmit"
-          >Продовжити</myButton
-        >
+        <myButton class="btn" type="submit">Продовжити</myButton>
         <p>
           Розрахунок можливий тільки якщо авто вже було колись застраховано.
         </p>
       </form>
     </div>
-    <div class="rightBox"></div>
+    <div
+      class="rightBox"
+      :style="{
+        background: `no-repeat url(${urlImg})`,
+        'background-size': 'cover',
+        'background-position-x': 'center',
+      }"
+    ></div>
   </div>
 </template>
 <script>
+import { Search } from "@element-plus/icons-vue";
+
 export default {
+  components: {
+    Search,
+  },
+  props: { urlImg: { type: String }, businessKey: { type: String } },
   data() {
     return {
       tags: [
@@ -65,27 +90,48 @@ export default {
         { id: 5, city: "Одеса", code: "UA51100270010076757" },
       ],
       active: 1,
-      code: "",
-      inputNumber: "",
-      inputAddress: "",
-      inputAge: "",
+
+      dataForm: {
+        inputNumber: "",
+        inputAddress: {
+          code: "",
+          addressString: "",
+        },
+        inputAge: "",
+      },
     };
   },
   methods: {
     toggle(divNumber) {
       this.active = divNumber;
     },
-    onSubmit() {
-      const createData = {
-        registrationCarNumber: this.inputNumber,
-        carRegistrationCityCode: this.inputAddress,
-        birthDate: this.inputAge,
+    onSubmitForm(value) {
+      const data = {
+        businessKey: this.businessKey,
+        value: {
+          registrationCarNumber: this.dataForm.inputNumber.toUpperCase(),
+          carRegistrationCityCode: this.dataForm.inputAddress.code
+            ? this.dataForm.inputAddress.code
+            : "UA80000000000093317",
+          birthDate: this.dataForm.inputAge,
+        },
       };
-      console.log(createData);
+      console.log(`submit`, data);
     },
-    onTag() {
-      console.log(this.code);
+    addInput(tag) {
+      const { city, code } = tag;
+
+      this.dataForm.inputAddress = {
+        code,
+        addressString: city,
+      };
     },
+  },
+  setup() {
+    const icons = { Search };
+    return {
+      icons,
+    };
   },
 };
 </script>

@@ -1,13 +1,21 @@
 <template>
-  <div class="tag" v-for="tag in tags">{{ tag.city }}</div>
+  <div
+    class="tag"
+    v-for="tag in tags"
+    :key="tag.id"
+    @click="$emit('addInput', tag)"
+  >
+    {{ tag.city }}
+  </div>
 </template>
 <script>
 export default {
   name: "tags",
+  emits: ["addInput"],
   props: { tags: { type: Array, required: true } },
 };
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .tag {
   padding: 6px 20px;
   border: 1px solid var(--color-lightgrey);

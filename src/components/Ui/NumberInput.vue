@@ -1,6 +1,13 @@
 <template>
   <div class="custom-input">
-    <input :placeholder="placeholder" :type="type" />
+    <input
+      :placeholder="placeholder"
+      :type="type"
+      :required="required"
+      :value="modelValue"
+      :pattern="pattern"
+      @input="updateInput"
+    />
   </div>
 </template>
 <script>
@@ -9,6 +16,14 @@ export default {
   props: {
     placeholder: { type: String, required: true },
     type: { type: String, required: true },
+    required: true,
+    modelValue: [String, Number],
+    pattern: { type: String, required: true },
+  },
+  methods: {
+    updateInput(event) {
+      this.$emit("update:modelValue", event.target.value);
+    },
   },
 };
 </script>
@@ -31,6 +46,7 @@ export default {
   background-position: center;
 }
 input {
+  outline: none;
   width: 360px;
   height: 60px;
   left: 47px;
@@ -42,10 +58,17 @@ input {
   padding-left: 37px;
   border: 1px solid var(--color-lightgrey);
   border-radius: 0 4px 4px 0;
-  text-align: left;
+  text-align: center;
 }
 input::placeholder {
   color: var(--color-lightgrey);
   text-align: center;
 }
+input:focus-visible {
+  border-color: var(--color-secondary);
+  text-align: left;
+}
+/* input: {
+  background-color: red;
+} */
 </style>
