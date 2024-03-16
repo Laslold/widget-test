@@ -10,13 +10,13 @@
         </div>
       </div>
 
-      <form class="form" @submit.prevent="onSubmitForm">
+      <form class="form" @submit.prevent="onSubmitForm" ref="myForm">
         <div class="inputNumber">
           <numberInput
             type="text"
             v-model.trim="dataForm.inputNumber"
             placeholder="AA1234AA"
-            pattern="^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$"
+            pattern="^[a-zA-Zа-яА-Я]{2}\d{4}[a-zA-Zа-яА-Я]{2}$"
             required
           />
         </div>
@@ -24,9 +24,9 @@
           <h4>Вік страхувальника <span> (повних років)</span></h4>
           <myInput
             placeholder="21"
-            type="number"
+            type="text"
             v-model.trim.number="dataForm.inputAge"
-            pattern="?:1[8-9]|[2-6]\d|7[0-5]"
+            pattern="^(7[4-5]|[3-6]\d|2[0-9]|1[4-9])$"
             required
           />
         </div>
@@ -44,13 +44,18 @@
             placeholder="Type something"
             :prefix-icon="icons.Search"
           /> -->
-
-          <myInput
-            placeholder="Київ, Київська обл., 01001"
-            type="text"
-            v-model.trim="dataForm.inputAddress.addressString"
-            required
-          />
+          <div class="input-address">
+            <myInput
+              placeholder="Київ, Київська обл., 01001"
+              type="text"
+              v-model.trim="dataForm.inputAddress.addressString"
+              required
+              :style="{ 'padding-left': '45px', width: '335px' }"
+            />
+            <svg class="icon">
+              <use xlink:href="../assets/sprite.svg#search"></use>
+            </svg>
+          </div>
 
           <div class="tags">
             <tags v-bind:tags="tags" @addInput="addInput" />
@@ -75,11 +80,16 @@
 <script>
 import { Search } from "@element-plus/icons-vue";
 
+import { fetchFromApiData } from "./utils/fetchApi.js";
 export default {
   components: {
     Search,
+    fetchFromApiData,
   },
-  props: { urlImg: { type: String }, businessKey: { type: String } },
+  props: {
+    urlImg: { type: String, default: "../assets/istart.png" },
+    businessKey: { type: String },
+  },
   data() {
     return {
       tags: [
@@ -116,7 +126,8 @@ export default {
           birthDate: this.dataForm.inputAge,
         },
       };
-      console.log(`submit`, data);
+      fetchFromApiData("api/v1/widgets/get_tariff", data);
+      this.$refs.myForm.reset();
     },
     addInput(tag) {
       const { city, code } = tag;
@@ -210,5 +221,19 @@ p {
   line-height: 20px;
   letter-spacing: 0em;
   text-align: left;
+}
+.input-address {
+  position: relative;
+}
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  /* background-image: url("../../assets/istar.png");  */
+  background-size: cover;
+  fill: var(--color-lightgrey);
 }
 </style>

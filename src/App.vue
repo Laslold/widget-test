@@ -16,10 +16,12 @@
 import Banner from "./components/Banner.vue";
 import Steps from "./components/Steps.vue";
 import Form from "./components/Form.vue";
-import axios from "axios";
+import store from "./store";
 
+import { provide } from "vue";
+import { fetchFromApi } from "./components/utils/fetchApi.js";
 export default {
-  components: { Banner, Steps, Form },
+  components: { Banner, Steps, Form, fetchFromApi },
   data() {
     return {
       businessKey: "",
@@ -30,17 +32,10 @@ export default {
     async fetchKey() {
       try {
         const [key, response] = await Promise.all([
-          axios.post(
-            "https://ecom-proxy.codot.pro/api/v1/widgets/widget_start",
-            { value: { widget_code: "VUE_TEST" } }
-          ),
-          axios.post(
-            "https://ecom-proxy.codot.pro/api/v1/widgets/widget_params",
-            {
-              value: { widget_code: "VUE_TEST" },
-            }
-          ),
+          fetchFromApi("api/v1/widgets/widget_start"),
+          fetchFromApi("api/v1/widgets/widget_params"),
         ]);
+
         this.businessKey = key.data.data.businessKey;
         this.params = response.data.data.ui_setting.banner_img_url;
       } catch (error) {
@@ -50,6 +45,9 @@ export default {
   },
   mounted() {
     this.fetchKey();
+  },
+  setup() {
+    provide("store", store);
   },
 };
 </script>

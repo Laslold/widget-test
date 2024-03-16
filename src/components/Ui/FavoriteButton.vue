@@ -1,9 +1,18 @@
 <template lang="">
-  <button class="btn"><span class="icon"></span><slot></slot></button>
+  <button class="btn">
+    <svg class="icon" v-if="!store">
+      <use xlink:href="../../assets/sprite.svg#star-empty"></use>
+    </svg>
+    <svg class="icon" v-else :style="{ fill: '#ff0000' }">
+      <use xlink:href="../../assets/sprite.svg#star-full"></use>
+    </svg>
+    <slot></slot>
+  </button>
 </template>
 <script>
 export default {
   name: "favoriteButton",
+  props: { store: { type: Boolean } },
 };
 </script>
 <style scoped>
@@ -29,16 +38,19 @@ export default {
   composes: btn;
   border: 1px solid var(--color-secondary);
   background-color: var(--color-white);
+  fill: var(--color-secondary);
+  color: var(--color-secondary);
   /* color: var(--color-grey); */
 }
 .icon {
   position: absolute;
   top: 50%;
-  left: 10px; /* Регулируйте отступ иконки по горизонтали */
+  left: 10px;
   transform: translateY(-50%);
-  width: 12px; /* Размер иконки */
-  height: 12px; /* Размер иконки */
-  background-image: url("../../assets/istar.png"); /* Подставьте путь к вашей иконке */
+  width: 12px;
+  height: 12px;
+  /* background-image: url("../../assets/istar.png");  */
   background-size: cover;
+  /* fill: rgb(229, 255, 0); */
 }
 </style>
