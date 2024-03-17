@@ -1,19 +1,26 @@
 import axios from "axios";
 
-const BASE_URL = "https://ecom-proxy.codot.pro";
+const errorWrapper = async (req) => {
+  try {
+    const { data } = await req;
+    return data;
+  } catch (error) {
+    return false;
+  }
+};
 
+const BASE_URL = "https://ecom-proxy.codot.pro";
+const instance = axios.create({
+  baseURL: BASE_URL + "/api/v1/widgets",
+});
 const options = {
-  url: BASE_URL,
+  // url: BASE_URL,
 
   value: { widget_code: "VUE_TEST" },
 };
 
-export const fetchFromApi = (url) => {
-  const data = axios.post(`${BASE_URL}/${url}`, options);
-  return data;
-};
-export const fetchFromApiData = (url, data) => {
-  const response = axios.post(`${BASE_URL}/${url}`, data);
+export const fetchFromApi = (url) =>
+  errorWrapper(instance.post(`/${url}`, options));
 
-  return response;
-};
+export const getTariffFromApi = async (value) =>
+  errorWrapper(instance.post(`/get_tariff`, value));

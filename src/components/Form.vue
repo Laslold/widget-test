@@ -2,10 +2,10 @@
   <div class="wrapper">
     <div class="leftBox">
       <div class="switchForm">
-        <div @click="toggle(1)" :class="{ active: active === 1 }">
+        <div @click="toggleTabs(0)" :class="{ active: activeTabIndex === 0 }">
           <p>За номером авто</p>
         </div>
-        <div @click="toggle(2)" :class="{ active: active === 2 }">
+        <div @click="toggleTabs(1)" :class="{ active: activeTabIndex === 1 }">
           <p>За параметрами</p>
         </div>
       </div>
@@ -79,12 +79,12 @@
 </template>
 <script>
 import { Search } from "@element-plus/icons-vue";
-
-import { fetchFromApiData } from "./utils/fetchApi.js";
+import { ElMessage, ElNotification } from "element-plus";
+import { getTariffFromApi } from "./utils/fetchApi.js";
+import { inject } from "vue";
 export default {
   components: {
     Search,
-    fetchFromApiData,
   },
   props: {
     urlImg: { type: String, default: "../assets/istart.png" },
@@ -99,7 +99,7 @@ export default {
         { id: 4, city: "Харків", code: "UA63120270010096107" },
         { id: 5, city: "Одеса", code: "UA51100270010076757" },
       ],
-      active: 1,
+      activeTabIndex: 0,
 
       dataForm: {
         inputNumber: "",
@@ -112,10 +112,10 @@ export default {
     };
   },
   methods: {
-    toggle(divNumber) {
-      this.active = divNumber;
+    toggleTabs(tabIndex) {
+      this.activeTabIndex = tabIndex;
     },
-    onSubmitForm(value) {
+    async onSubmitForm(value) {
       const data = {
         businessKey: this.businessKey,
         value: {
@@ -126,8 +126,28 @@ export default {
           birthDate: this.dataForm.inputAge,
         },
       };
-      fetchFromApiData("api/v1/widgets/get_tariff", data);
-      this.$refs.myForm.reset();
+      this.store.methods.toggleGlobalLoading();
+      const result = await getTariffFromApi(data);
+
+      this.store.methods.toggleGlobalLoading();
+      if (!result) {
+        ElMessage.error("Oops, this is a error .");
+        return;
+      }
+      this.dataForm = {
+        inputNumber: "",
+        inputAddress: {
+          code: "",
+          addressString: "",
+        },
+        inputAge: "",
+      };
+      const { tariff } = result.data;
+      ElNotification({
+        title: "Ваш тарифний план",
+        message: `${tariff}`,
+        type: "success",
+      });
     },
     addInput(tag) {
       const { city, code } = tag;
@@ -140,8 +160,11 @@ export default {
   },
   setup() {
     const icons = { Search };
+    const store = inject("store");
+
     return {
       icons,
+      store,
     };
   },
 };
