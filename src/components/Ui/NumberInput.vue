@@ -68,7 +68,4 @@ input:focus-visible {
   border-color: var(--color-secondary);
   text-align: left;
 }
-/* input: {
-  background-color: red;
-} */
 </style>

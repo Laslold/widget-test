@@ -1,5 +1,9 @@
 <template lang="">
-  <div v-loading.fullscreen.lock="store.state.loading">
+  <div
+    v-loading.fullscreen.lock="store.state.loading"
+    class="box"
+    v-if="this.store.state.businessKey && bgImageUrl"
+  >
     <header>Header</header>
     <nav>
       <div>Navigation</div>
@@ -7,8 +11,11 @@
     <main>
       <div class="container"><Banner /></div>
       <div class="container"><Steps /></div>
-      <div class="container">
-        <Form :urlImg="params" :businessKey="businessKey" />
+      <div
+        class="container"
+        :style="{ border: ' 2px solid #F8F9FB', 'border-radius': '8px' }"
+      >
+        <Form :urlImg="bgImageUrl" />
       </div>
     </main>
     <footer>Footer</footer>
@@ -26,8 +33,7 @@ export default {
   components: { Banner, Steps, Form, fetchFromApi },
   data() {
     return {
-      businessKey: "",
-      params: "",
+      bgImageUrl: "",
     };
   },
   methods: {
@@ -39,20 +45,19 @@ export default {
           fetchFromApi("widget_params"),
         ]);
 
-        this.businessKey = key.data.businessKey;
-        this.params = response.data.ui_setting.banner_img_url;
+        this.store.state.businessKey = key.data.businessKey;
+        this.bgImageUrl = response.data.ui_setting.banner_img_url;
       } catch (error) {
         ElNotification({
           title: "Помилка",
           message: `Помилка при обробці запитів`,
           type: "error",
         });
-        // console.error("Ошибка при выполнении запросов:", error);
       }
       this.store.methods.toggleGlobalLoading();
     },
   },
-  mounted() {
+  beforeMount() {
     this.fetchKey();
   },
   setup() {

@@ -35,6 +35,12 @@ export default {
   outline: none;
   border: 1px solid var(--color-lightgrey);
   padding: 3px 20px;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
 }
 .input:focus-visible {
   border-color: var(--color-secondary);

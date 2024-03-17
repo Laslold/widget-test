@@ -9,8 +9,6 @@ export default {
 </script>
 <style scoped>
 .btn {
-  width: 134px;
-  height: 40px;
   padding: 8px 20px;
   gap: 4px;
   border: 1px solid transparent;

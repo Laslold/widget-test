@@ -14,8 +14,6 @@ const instance = axios.create({
   baseURL: BASE_URL + "/api/v1/widgets",
 });
 const options = {
-  // url: BASE_URL,
-
   value: { widget_code: "VUE_TEST" },
 };
 

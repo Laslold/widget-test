@@ -57,7 +57,6 @@ export default {
   background-color: var(--color-white);
   fill: var(--color-secondary);
   color: var(--color-secondary);
-  /* color: var(--color-grey); */
 }
 .icon {
   position: absolute;
@@ -66,8 +65,6 @@ export default {
   transform: translateY(-50%);
   width: 12px;
   height: 12px;
-  /* background-image: url("../../assets/istar.png");  */
   background-size: cover;
-  /* fill: rgb(229, 255, 0); */
 }
 </style>
