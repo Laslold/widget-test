@@ -73,7 +73,7 @@ nav {
 }
 main {
   width: 1140px;
-  /* height: 100vh; */
+  height: 100vh;
   margin: 60px auto;
 }
 footer {
